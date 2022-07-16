@@ -38,7 +38,7 @@ dt_fmt = "%Y-%m-%d %H:%M:%S"
 date_fmt = "%Y%m%d"
 
 try:
-    pro = ts.pro_api()
+    pro = ts.pro_api("93aa1639b2e9b370d0ad87346e8b812d973f4e0c653a9541d4f213e1")
 except:
     print("Tushare Pro 初始化失败")
 

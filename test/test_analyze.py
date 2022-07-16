@@ -38,7 +38,7 @@ def read_daily():
 def test_find_bi():
     bars = read_daily()
     # 去除包含关系
-    bars1 = []
+    bars1:List[NewBar] = []
     for bar in bars:
         if len(bars1) < 2:
             bars1.append(NewBar(symbol=bar.symbol, id=bar.id, freq=bar.freq,

@@ -193,7 +193,9 @@ class TsDataCache:
                 print(f"pro_bar: read cache {file_cache}")
         else:
             start_date_ = (pd.to_datetime(self.sdt) - timedelta(days=1000)).strftime('%Y%m%d')
-            kline = ts.pro_bar(ts_code=ts_code, asset=asset, adj=adj, freq=freq,
+            # print(self.pro.get_token())
+            print(ts.get_token())
+            kline = ts.pro_bar(ts_code=ts_code, asset="E", adj=adj, freq=freq,
                                start_date=start_date_, end_date=self.edt)
             kline = kline.sort_values('trade_date', ignore_index=True)
             kline['trade_date'] = pd.to_datetime(kline['trade_date'], format=self.date_fmt)
