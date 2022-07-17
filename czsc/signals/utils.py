@@ -13,7 +13,7 @@ from typing import List, Union
 from collections import Counter
 
 from ..utils.ta import KDJ
-from ..objects import RawBar, BI, Direction, ZS
+from ..objects import RawBar, BI, Direction, ZSItem
 
 
 def check_pressure_support(bars: List[RawBar], q_seq: List[float] = None):
@@ -313,7 +313,7 @@ def is_bis_up(bis: List[BI]) -> bool:
         return False
 
 
-def get_zs_seq(bis: List[BI]) -> List[ZS]:
+def get_zs_seq(bis: List[BI]) -> List[ZSItem]:
     """获取连续笔中的中枢序列
 
     :param bis: 连续笔对象列表
@@ -325,7 +325,7 @@ def get_zs_seq(bis: List[BI]) -> List[ZS]:
 
     for bi in bis:
         if not zs_list:
-            zs_list.append(ZS(symbol=bi.symbol, bis=[bi]))
+            zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
             continue
 
         zs = zs_list[-1]
@@ -335,7 +335,7 @@ def get_zs_seq(bis: List[BI]) -> List[ZS]:
         else:
             if (bi.direction == Direction.Up and bi.high < zs.zd) \
                     or (bi.direction == Direction.Down and bi.low > zs.zg):
-                zs_list.append(ZS(symbol=bi.symbol, bis=[bi]))
+                zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
             else:
                 zs.bis.append(bi)
                 zs_list[-1] = zs

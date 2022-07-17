@@ -50,7 +50,7 @@ class NewBar:
     low: [float, int]
     vol: [float, int]
     amount: [float, int] = None
-    elements: List = None  # 存入具有包含关系的原始K线
+    elements: List[RawBar] = None  # 存入具有包含关系的原始K线
 
     @property
     def raw_bars(self):
@@ -61,11 +61,11 @@ class NewBar:
 class FX:
     symbol: str
     dt: datetime
-    mark: Mark
+    mark: Mark  # 分型标识（底分型，顶分型)
     high: [float, int]
     low: [float, int]
     fx: [float, int]
-    elements: List = None
+    elements: List[NewBar] = None
 
     @property
     def new_bars(self):
@@ -226,7 +226,7 @@ class BI:
 
 
 @dataclass
-class ZS:
+class ZSItem:
     """中枢对象"""
     symbol: str
     bis: List[BI]

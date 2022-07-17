@@ -13,8 +13,9 @@ from typing import List, Callable
 from collections import OrderedDict
 
 from .enum import Mark, Direction
-from .objects import BI, FX, RawBar, NewBar, Signal
-from .utils.echarts_plot import kline_pro
+from .objects import BI, FX, RawBar, NewBar, Signal, Freq, ZSItem
+from .utils.echarts_plot import kline_pro,kline_pro2
+# from . import signals
 from . import envs
 
 
@@ -78,8 +79,8 @@ def check_fx(k1: NewBar, k2: NewBar, k3: NewBar):
 def check_fxs(bars: List[NewBar]) -> List[FX]:
     """输入一串无包含关系K线，查找其中所有分型"""
     fxs = []
-    for i in range(1, len(bars)-1):
-        fx: FX = check_fx(bars[i-1], bars[i], bars[i+1])
+    for i in range(1, len(bars) - 1):
+        fx: FX = check_fx(bars[i - 1], bars[i], bars[i + 1])
         if isinstance(fx, FX):
             # 这里可能隐含Bug，默认情况下，fxs本身是顶底交替的，但是对于一些特殊情况下不是这样，这是不对的。
             # 临时处理方案，强制要求fxs序列顶底交替
@@ -103,7 +104,7 @@ def check_bi(bars: List[NewBar], benchmark: float = None):
 
     fx_a = fxs[0]
     try:
-        if fxs[0].mark == Mark.D:
+        if fxs[0].mark == Mark.D:   # 第一个为底分型，找对应的所有顶分型
             direction = Direction.Up
             fxs_b = [x for x in fxs if x.mark == Mark.G and x.dt > fx_a.dt and x.fx > fx_a.fx]
             if not fxs_b:
@@ -114,7 +115,7 @@ def check_bi(bars: List[NewBar], benchmark: float = None):
                 if fx.high >= fx_b.high:
                     fx_b = fx
 
-        elif fxs[0].mark == Mark.G:
+        elif fxs[0].mark == Mark.G: # 第一个为顶分型，找对应的所有底分型
             direction = Direction.Down
             fxs_b = [x for x in fxs if x.mark == Mark.D and x.dt > fx_a.dt and x.fx < fx_a.fx]
             if not fxs_b:
@@ -202,6 +203,35 @@ def signals_counter(signals_list) -> OrderedDict:
     return s
 
 
+def get_zs_seq(bis: List[BI]) -> List[ZSItem]:
+    """获取连续笔中的中枢序列
+
+    :param bis: 连续笔对象列表
+    :return: 中枢序列
+    """
+    zs_list = []
+    if not bis:
+        return []
+
+    for bi in bis:
+        if not zs_list:
+            zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
+            continue
+
+        zs = zs_list[-1]
+        if not zs.bis:
+            zs.bis.append(bi)
+            zs_list[-1] = zs
+        else:
+            if (bi.direction == Direction.Up and bi.high < zs.zd) \
+                    or (bi.direction == Direction.Down and bi.low > zs.zg):
+                zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
+            else:
+                zs.bis.append(bi)
+                zs_list[-1] = zs
+    return zs_list
+
+
 class CZSC:
     def __init__(self,
                  bars: List[RawBar],
@@ -222,13 +252,15 @@ class CZSC:
         self.bars_ubi: List[NewBar] = []  # 未完成笔的无包含K线序列
         self.bi_list: List[BI] = []
         self.symbol = bars[0].symbol
-        self.freq = bars[0].freq
-        self.get_signals = get_signals
+        self.freq: Freq = bars[0].freq
+        self.get_signals: Callable = get_signals
         self.signals = None
         self.signals_list = []
-
+        self.bars_input = bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
         for bar in bars:
             self.update(bar)
+        self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
+        print(self.zs_list)
 
     def __repr__(self):
         return "<CZSC~{}~{}>".format(self.symbol, self.freq.value)
@@ -352,7 +384,11 @@ class CZSC:
         else:
             bi = None
             fx = None
-        chart = kline_pro(kline, bi=bi, fx=fx, width=width, height=height, bs=bs,
+        if len(self.zs_list) > 0:
+            zs = [{'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg} for x in self.zs_list]
+        else:
+            zs = None
+        chart = kline_pro2(kline, bi=bi, zs=zs, fx=fx, width=width, height=height, bs=bs,
                           title="{}-{}".format(self.symbol, self.freq.value))
         return chart
 
@@ -391,5 +427,3 @@ class CZSC:
             if self.last_bi_extend:
                 return self.bi_list[:-1]
         return self.bi_list
-
-

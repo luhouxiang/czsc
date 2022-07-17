@@ -37,7 +37,7 @@ def get_max_bi_num(v: int = None) -> int:
     默认值为 50，仅使用内置的信号和因子，不需要调整这个参数。
     如果进行新的信号计算需要用到更多的笔，可以适当调大这个参数。
     """
-    max_bi_num = v if v else os.environ.get('czsc_max_bi_num', 50)
+    max_bi_num = v if v else os.environ.get('czsc_max_bi_num', 500)
     return int(float(max_bi_num))
 
 
