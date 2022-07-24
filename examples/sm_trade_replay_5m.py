@@ -10,6 +10,8 @@ from czsc.utils import BarGenerator
 from czsc.traders.utils import trade_replay
 from czsc.utils import data_io
 from czsc.objects import RawBar
+from czsc.utils.user_logbook import user_log
+
 
 tactic = strategy("600160.SH")
 base_freq = tactic['base_freq']
@@ -22,6 +24,9 @@ if __name__ == '__main__':
     bg.base_freq_constraint[base_freq] = tactic['freqs']
     bars1 = bars[:8000]
     bars2 = bars[8000:]
+    user_log.info("bars1: {}-->{}".format(str(bars1[0].dt), str(bars1[-1].dt)))
+    user_log.info("bars2: {}-->{}".format(str(bars2[0].dt), str(bars2[-1].dt)))
+
     for bar in bars1:
         bg.update(bar)
     trade_replay(bg, bars2, strategy, res_path)

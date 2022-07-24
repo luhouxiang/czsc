@@ -89,7 +89,7 @@ class CzscAdvancedTrader:
                     for op in self.short_pos.operates[-10:]:
                         if op['dt'] >= ka.bars_raw[0].dt:
                             bs.append(op)
-
+            ka.update_zs()
             chart = ka.to_echarts(width, height, bs)
             tab.add(chart, freq)
 

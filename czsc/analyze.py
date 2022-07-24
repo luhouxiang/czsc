@@ -315,6 +315,9 @@ class CZSC:
         if isinstance(bi, BI):
             self.bi_list.append(bi)
 
+    def update_zs(self):
+        self.zs_list = get_zs_seq(self.bi_list)
+
     def update(self, bar: RawBar):
         """更新分析结果
 

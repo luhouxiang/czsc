@@ -26,7 +26,7 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
             _dt = op['dt'].strftime('%Y%m%d#%H%M')
             file_name = f"{op['op'].value}_{_dt}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
             file_html = os.path.join(res_path, file_name)
-            trader.take_snapshot(file_html)
+            # trader.take_snapshot(file_html)   # remove by luhx 这儿的回放记录没必要，实在太慢，每记录一次至少2秒 2022-7-25
             user_log.info(f'snapshot saved into {file_html}')
 
         if trader.short_pos and trader.short_pos.pos_changed:
@@ -34,7 +34,7 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
             _dt = op['dt'].strftime('%Y%m%d#%H%M')
             file_name = f"{op['op'].value}_{_dt}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
             file_html = os.path.join(res_path, file_name)
-            trader.take_snapshot(file_html)
+            # trader.take_snapshot(file_html)
             user_log.info(f'snapshot saved into {file_html}')
 
     c = CZSC(raw_bars, max_bi_num=10000)
@@ -58,7 +58,9 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
     zs = zs
     chart = kline_pro_ex(kline, bi=bi, fx=fx, zs=zs, bs=bs, width="1400px", height='580px',
                       title=f"{strategy.__name__} {bg.symbol} 交易回放")
-    chart.render(os.path.join(res_path, f"replay_{strategy.__name__}@{bg.symbol}.html"))
+    reply_strategy_path = os.path.join(res_path, f"replay_{strategy.__name__}@{bg.symbol}.html")
+    chart.render(reply_strategy_path)
+    user_log.info("save reply_strategy_path: {}".format(reply_strategy_path))
     dill.dump(trader, open(os.path.join(res_path, "trader.pkl"), 'wb'))
     user_log.info("{},{}".format(trader.strategy.__name__, trader.results['long_performance']))
 
