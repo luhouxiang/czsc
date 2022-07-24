@@ -32,6 +32,7 @@ def set_gm_token(token):
     with open(os.path.join(os.path.expanduser("~"), "gm_token.txt"), 'w', encoding='utf-8') as f:
         f.write(token)
 
+print(os.path.join(os.path.expanduser("~"), "gm_token.txt"))
 
 file_token = os.path.join(os.path.expanduser("~"), "gm_token.txt")
 if not os.path.exists(file_token):

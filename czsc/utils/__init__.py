@@ -7,7 +7,7 @@ from . import log
 from . import echarts_plot
 from . import fei_shu
 
-from .echarts_plot import kline_pro, heat_map
+from .echarts_plot import kline_pro_ex, heat_map
 from .log import create_logger
 from .word_writer import WordWriter
 from .corr import nmi_matrix

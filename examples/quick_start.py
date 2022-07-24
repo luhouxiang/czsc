@@ -21,11 +21,11 @@ pd.set_option('display.max_columns', 20)
 
 # 需要先设置 Tushare Token，否则报错，无法执行
 # TsDataCache 是统一的 tushare 数据缓存入口，适用于需要重复调用接口的场景
-dc = TsDataCache(data_path=r"C:\ts_data", sdt='2000-01-01', edt='2022-07-16')
+dc = TsDataCache(data_path=r"C:\ts_data", sdt='2000-01-01', edt='2023-07-16')
 
 
 # 在浏览器中查看单标的单级别的分型、笔识别结果
-bars = dc.pro_bar(ts_code='600160.SH', asset='E', start_date='20150101', end_date="20220716", freq='D')
+bars = dc.pro_bar(ts_code='000768.SZ', asset='E', start_date='20150101', end_date="20230716", freq='D')
 c = CZSC(bars)
 c.open_in_browser()
 

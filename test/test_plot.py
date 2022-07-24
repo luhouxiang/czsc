@@ -21,7 +21,7 @@ def test_heat_map():
     os.remove(file_html)
 
 
-def test_kline_pro():
+def test_kline_ex_pro():
     file_kline = os.path.join(cur_path, "data/000001.SH_D.csv")
     kline = pd.read_csv(file_kline, encoding="utf-8")
     bars = [RawBar(symbol=row['symbol'], id=i, freq=Freq.D, open=row['open'], dt=row['dt'],

@@ -9,9 +9,10 @@ import dill
 from tqdm import tqdm
 from typing import List, Callable
 from czsc.analyze import CZSC
-from czsc.utils import x_round, BarGenerator, kline_pro
+from czsc.utils import x_round, BarGenerator, kline_pro_ex
 from czsc.objects import RawBar
 from czsc.traders.advanced import CzscAdvancedTrader
+from czsc.utils.user_logbook import user_log
 
 
 def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, res_path):
@@ -26,7 +27,7 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
             file_name = f"{op['op'].value}_{_dt}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
             file_html = os.path.join(res_path, file_name)
             trader.take_snapshot(file_html)
-            print(f'snapshot saved into {file_html}')
+            user_log.info(f'snapshot saved into {file_html}')
 
         if trader.short_pos and trader.short_pos.pos_changed:
             op = trader.short_pos.operates[-1]
@@ -34,7 +35,7 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
             file_name = f"{op['op'].value}_{_dt}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
             file_html = os.path.join(res_path, file_name)
             trader.take_snapshot(file_html)
-            print(f'snapshot saved into {file_html}')
+            user_log.info(f'snapshot saved into {file_html}')
 
     c = CZSC(raw_bars, max_bi_num=10000)
     kline = [x.__dict__ for x in c.bars_raw]
@@ -50,12 +51,16 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
         bs.extend(trader.long_pos.operates)
     if trader.short_pos:
         bs.extend(trader.short_pos.operates)
-
-    chart = kline_pro(kline, bi=bi, fx=fx, bs=bs, width="1400px", height='580px',
+    if len(c.zs_list) > 0:
+        zs = [{'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg} for x in c.zs_list]
+    else:
+        zs = None
+    zs = zs
+    chart = kline_pro_ex(kline, bi=bi, fx=fx, zs=zs, bs=bs, width="1400px", height='580px',
                       title=f"{strategy.__name__} {bg.symbol} 交易回放")
     chart.render(os.path.join(res_path, f"replay_{strategy.__name__}@{bg.symbol}.html"))
     dill.dump(trader, open(os.path.join(res_path, "trader.pkl"), 'wb'))
-    print(trader.strategy.__name__, trader.results['long_performance'])
+    user_log.info("{},{}".format(trader.strategy.__name__, trader.results['long_performance']))
 
 
 def trader_fast_backtest(bars: List[RawBar],
@@ -93,7 +98,7 @@ def trader_fast_backtest(bars: List[RawBar],
                 file_name = f"{op['op'].value}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
                 file_html = os.path.join(html_path, file_name)
                 ct.take_snapshot(file_html)
-                print(f'snapshot saved into {file_html}')
+                user_log.info(f'snapshot saved into {file_html}')
 
         if ct.short_pos:
             if ct.short_pos.pos_changed and html_path:
@@ -101,7 +106,7 @@ def trader_fast_backtest(bars: List[RawBar],
                 file_name = f"{op['op'].value}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
                 file_html = os.path.join(html_path, file_name)
                 ct.take_snapshot(file_html)
-                print(f'snapshot saved into {file_html}')
+                user_log.info(f'snapshot saved into {file_html}')
 
     res = {"signals": signals}
     res.update(ct.results)

@@ -103,7 +103,7 @@ def test_czsc_update():
     kline = [x.__dict__ for x in c.bars_raw]
     bi = [{'dt': x.fx_a.dt, "bi": x.fx_a.fx} for x in c.bi_list] + \
          [{'dt': c.bi_list[-1].fx_b.dt, "bi": c.bi_list[-1].fx_b.fx}]
-    chart = kline_pro(kline, bi=bi, title="{} - {}".format(c.symbol, c.freq))
+    chart = kline_pro_ex(kline, bi=bi, title="{} - {}".format(c.symbol, c.freq))
     file_html = "x.html"
     chart.render(file_html)
     os.remove(file_html)

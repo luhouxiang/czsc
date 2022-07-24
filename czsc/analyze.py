@@ -14,7 +14,8 @@ from collections import OrderedDict
 
 from .enum import Mark, Direction
 from .objects import BI, FX, RawBar, NewBar, Signal, Freq, ZSItem
-from .utils.echarts_plot import kline_pro,kline_pro2
+from .utils.echarts_plot import kline_pro_ex
+from .utils.user_logbook import user_log
 # from . import signals
 from . import envs
 
@@ -260,7 +261,7 @@ class CZSC:
         for bar in bars:
             self.update(bar)
         self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
-        print(self.zs_list)
+        user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))
 
     def __repr__(self):
         return "<CZSC~{}~{}>".format(self.symbol, self.freq.value)
@@ -388,7 +389,8 @@ class CZSC:
             zs = [{'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg} for x in self.zs_list]
         else:
             zs = None
-        chart = kline_pro2(kline, bi=bi, zs=zs, fx=fx, width=width, height=height, bs=bs,
+        zs = zs
+        chart = kline_pro_ex(kline, fx=fx, bi=bi, zs=zs, width=width, height=height, bs=bs,
                           title="{}-{}".format(self.symbol, self.freq.value))
         return chart
 
