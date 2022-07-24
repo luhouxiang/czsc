@@ -19,6 +19,9 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
     """交易策略交易过程回放"""
     os.makedirs(res_path, exist_ok=True)
     trader = CzscAdvancedTrader(bg, strategy)
+    reply_before_data_path = os.path.join(res_path, f"replay_before_{strategy.__name__}@{bg.symbol}.html")
+    trader.take_snapshot(reply_before_data_path)
+    user_log.info("save reply_before_data_path: {}".format(reply_before_data_path))
     for bar in raw_bars:
         trader.update(bar)
         if trader.long_pos and trader.long_pos.pos_changed:
@@ -26,7 +29,7 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
             _dt = op['dt'].strftime('%Y%m%d#%H%M')
             file_name = f"{op['op'].value}_{_dt}_{op['bid']}_{x_round(op['price'], 2)}_{op['op_desc']}.html"
             file_html = os.path.join(res_path, file_name)
-            # trader.take_snapshot(file_html)   # remove by luhx 这儿的回放记录没必要，实在太慢，每记录一次至少2秒 2022-7-25
+            trader.take_snapshot(file_html)   # remove by luhx 这儿的回放记录没必要，实在太慢，每记录一次至少2秒 2022-7-25
             user_log.info(f'snapshot saved into {file_html}')
 
         if trader.short_pos and trader.short_pos.pos_changed:
@@ -61,6 +64,12 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
     reply_strategy_path = os.path.join(res_path, f"replay_{strategy.__name__}@{bg.symbol}.html")
     chart.render(reply_strategy_path)
     user_log.info("save reply_strategy_path: {}".format(reply_strategy_path))
+
+    reply_strategy_all_data_path = os.path.join(res_path, f"replay_{strategy.__name__}@{bg.symbol}_all.html")
+    trader.take_snapshot(reply_strategy_all_data_path)
+    user_log.info("save reply_strategy_all_data_path: {}".format(reply_strategy_all_data_path))
+
+
     dill.dump(trader, open(os.path.join(res_path, "trader.pkl"), 'wb'))
     user_log.info("{},{}".format(trader.strategy.__name__, trader.results['long_performance']))
 
