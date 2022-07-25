@@ -44,6 +44,8 @@ def trader_example_sm_5m(symbol, T0=False, min_interval=3600*4):
 
         for _, c in cat.kas.items():
             s.update(signals.bxt.get_s_d0_bi(c))
+            s.update(signals.bxt.get_s_base_xt(c, 1))
+            s.update(signals.bxt.get_s_like_bs(c, 1))
             if c.freq in [Freq.F5, Freq.F30, Freq.D, Freq.W]:
                 s.update(signals.other.get_s_zdt(c, di=1))
                 s.update(signals.other.get_s_op_time_span(c, op='开多', time_span=('13:00', '14:50')))
