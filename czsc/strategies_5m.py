@@ -28,7 +28,7 @@ def trader_standard(symbol, T0=False, min_interval=3600*4):
     pass
 
 
-def trader_example_sm_5m(symbol, T0=False, min_interval=3600*4):
+def trader_example_5m(symbol, T0=False, min_interval=3600 * 4):
     """A股市场择时策略样例，支持按交易标的独立设置参数
 
     :param symbol:
@@ -60,19 +60,19 @@ def trader_example_sm_5m(symbol, T0=False, min_interval=3600*4):
 
     long_events = [
         Event(name="开多", operate=Operate.LO, factors=[
-            Factor(name="七笔", signals_all=[
-                # Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
-                # Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
-                # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
-                Signal("5分钟_倒1笔_基础形态_类三买_七笔_任意_0"),
-                # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
-                # Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
-            ]),
+            # Factor(name="七笔", signals_all=[
+            #     # Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
+            #     # Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
+            #     # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
+            #     Signal("5分钟_倒1笔_基础形态_类三买_七笔_任意_0"),
+            #     # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
+            #     # Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
+            # ]),
             Factor(name="五笔", signals_all=[
                 # Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
                 # Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
                 # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
-                Signal("5分钟_倒1笔_基础形态_类三买_五笔_任意_0"),
+                Signal("30分钟_倒1笔_基础形态_类三买_五笔_任意_0"),
                 # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
                 # Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
             ]),

@@ -14,10 +14,11 @@ from pyecharts.charts import Tab
 from pyecharts.components import Table
 from pyecharts.options import ComponentTitleOpts
 from czsc.analyze import CZSC, signals_counter
-from czsc.objects import PositionLong, PositionShort, Operate, Event, RawBar
-from czsc.utils import BarGenerator, x_round
+from czsc.objects import PositionLong, PositionShort, Operate, Event, RawBar, Freq
+from czsc.utils import BarGenerator, x_round, freq_end_time
 from czsc.utils.cache import home_path
 from czsc import envs
+
 
 
 class CzscAdvancedTrader:
@@ -77,18 +78,22 @@ class CzscAdvancedTrader:
         for freq in self.freqs:
             ka: CZSC = self.kas[freq]
             bs = None
-            if freq == self.base_freq:
+            if 1:  # freq == self.base_freq:
                 # 在基础周期K线上加入最近的操作记录
                 bs = []
                 if self.long_pos:
                     for op in self.long_pos.operates[-10:]:
                         if op['dt'] >= ka.bars_raw[0].dt:
-                            bs.append(op)
+                            t_op = op.copy()
+                            t_op['dt'] = freq_end_time(t_op['dt'], Freq(freq))
+                            bs.append(t_op)
 
                 if self.short_pos:
                     for op in self.short_pos.operates[-10:]:
                         if op['dt'] >= ka.bars_raw[0].dt:
-                            bs.append(op)
+                            t_op = op.copy()
+                            t_op['dt'] = freq_end_time(t_op['dt'], Freq(freq))
+                            bs.append(t_op)
             ka.update_zs()
             chart = ka.to_echarts(width, height, bs)
             tab.add(chart, freq)
