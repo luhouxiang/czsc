@@ -60,10 +60,19 @@ def trader_example_sm_5m(symbol, T0=False, min_interval=3600*4):
 
     long_events = [
         Event(name="开多", operate=Operate.LO, factors=[
-            Factor(name="低吸", signals_all=[
-                Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
+            Factor(name="七笔", signals_all=[
+                # Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
                 # Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
-                Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
+                # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
+                Signal("5分钟_倒1笔_基础形态_类三买_七笔_任意_0"),
+                # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
+                # Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
+            ]),
+            Factor(name="五笔", signals_all=[
+                # Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
+                # Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
+                # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
+                Signal("5分钟_倒1笔_基础形态_类三买_五笔_任意_0"),
                 # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
                 # Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
             ]),
@@ -72,7 +81,7 @@ def trader_example_sm_5m(symbol, T0=False, min_interval=3600*4):
         Event(name="平多", operate=Operate.LE, factors=[
             Factor(name="持有资金", signals_all=[
                 Signal("平多时间范围_09:35_14:50_是_任意_任意_0"),
-                Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
+                Signal("5分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
             ], signals_not=[
                 # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
                 # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
@@ -95,66 +104,4 @@ def trader_example_sm_5m(symbol, T0=False, min_interval=3600*4):
     }
 
     return tactic
-
-
-def trader_strategy_5m(symbol):
-    """A股市场择时策略A"""
-    def get_signals(cat: CzscAdvancedTrader) -> OrderedDict:
-        s = OrderedDict({"symbol": cat.symbol, "dt": cat.end_dt, "close": cat.latest_price})
-        s.update(signals.pos.get_s_long01(cat, th=100))
-        s.update(signals.pos.get_s_long02(cat, th=100))
-        s.update(signals.pos.get_s_long05(cat, span='月', th=500))
-        for _, c in cat.kas.items():
-            if c.freq in [Freq.F5, Freq.F30]:
-                s.update(signals.bxt.get_s_d0_bi(c))
-                s.update(signals.other.get_s_zdt(c, di=1))
-                s.update(signals.other.get_s_op_time_span(c, op='开多', time_span=('13:00', '14:50')))
-                s.update(signals.other.get_s_op_time_span(c, op='平多', time_span=('09:35', '14:50')))
-
-            if c.freq in [Freq.F30, Freq.D, Freq.W]:
-                s.update(signals.ta.get_s_macd(c, di=1))
-        return s
-
-    # 定义多头持仓对象和交易事件
-    long_pos = PositionLong(symbol, hold_long_a=1, hold_long_b=1, hold_long_c=1,
-                            T0=False, long_min_interval=3600*4)
-    long_events = [
-        Event(name="开多", operate=Operate.LO, factors=[
-            Factor(name="低吸", signals_all=[
-                Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
-                Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
-                Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
-                Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
-                Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
-            ]),
-        ]),
-
-        Event(name="平多", operate=Operate.LE, factors=[
-            Factor(name="持有资金", signals_all=[
-                Signal("平多时间范围_09:35_14:50_是_任意_任意_0"),
-                Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
-            ], signals_not=[
-                Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
-                Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
-            ]),
-        ]),
-    ]
-
-    tactic = {
-        "base_freq": '5分钟',
-        "freqs": ['30分钟', '日线'],
-        "get_signals": get_signals,
-        "signals_n": 0,
-
-        "long_pos": long_pos,
-        "long_events": long_events,
-
-        # 空头策略不进行定义，也就是不做空头交易
-        "short_pos": None,
-        "short_events": None,
-    }
-
-    return tactic
-
-
 
