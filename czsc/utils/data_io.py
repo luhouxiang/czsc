@@ -32,3 +32,28 @@ def read_5m_data(path, symbol) -> List[RawBar]:
                      )
         bars.append(bar)
     return bars
+
+
+def read_1d_data(path, symbol) -> List[RawBar]:
+    """
+    :param kline:
+    :return: 转换好的K线数据
+    """
+    # path = r"D:\new_jyplug\T0002\export\5m"
+    # symbol = "600000.SH"
+    file_name = path + "/" + symbol.split(".")[1] + "#" + symbol.split(".")[0] + ".txt"
+    df = pd.read_csv(file_name, encoding="gbk", header=1, sep='\t',
+                     names=["date", "open", "high", "low", "close", "volume", "amount"])
+    df.drop([len(df)-1], inplace=True)
+    bars = []
+    for index, row in df.iterrows():
+        # 将每一根K线转换成 RawBar 对象
+        dt =pd.to_datetime(row["date"])
+        bar = RawBar(symbol=symbol, dt= dt,
+                     id=index, freq=Freq.D, open=row['open'], close=row['close'],
+                     high=row['high'], low=row['low'],
+                     vol=row['volume'],          # 成交量，单位：股
+                     amount=row['amount'],    # 成交额，单位：元
+                     )
+        bars.append(bar)
+    return bars

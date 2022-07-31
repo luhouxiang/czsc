@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 author: luhx
-create_dt: 2022/7/24 9:18
+create_dt: 2022/7/31 17:52
 describe: 提供一些策略的编写案例
 
 以 trader_ 开头的是择时交易策略案例
@@ -28,7 +28,7 @@ def trader_standard(symbol, T0=False, min_interval=3600*4):
     pass
 
 
-def trader_example_5m(symbol, T0=False, min_interval=3600 * 4):
+def trader_example_1d(symbol, T0=False, min_interval=3600 * 4):
     """A股市场择时策略样例，支持按交易标的独立设置参数
 
     :param symbol:
@@ -46,11 +46,11 @@ def trader_example_5m(symbol, T0=False, min_interval=3600 * 4):
             s.update(signals.bxt.get_s_d0_bi(c))
             s.update(signals.bxt.get_s_base_xt(c, 1))
             s.update(signals.bxt.get_s_like_bs(c, 1))
-            if c.freq in [Freq.F5, Freq.F30, Freq.D, Freq.W]:
+            if c.freq in [Freq.D, Freq.W]:
                 s.update(signals.other.get_s_zdt(c, di=1))
                 s.update(signals.other.get_s_op_time_span(c, op='开多', time_span=('13:00', '14:50')))
                 s.update(signals.other.get_s_op_time_span(c, op='平多', time_span=('09:35', '14:50')))
-            if c.freq in [Freq.F5, Freq.F30, Freq.D, Freq.W]:
+            if c.freq in [Freq.D, Freq.W]:
                 s.update(signals.ta.get_s_macd(c, di=1))
         return s
 
@@ -72,7 +72,7 @@ def trader_example_5m(symbol, T0=False, min_interval=3600 * 4):
                 # Signal("开多时间范围_13:00_14:50_是_任意_任意_0"),
                 # Signal("30分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
                 # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
-                Signal("30分钟_倒1笔_基础形态_类三买_五笔_任意_0"),
+                Signal("日线_倒1笔_基础形态_类三买_五笔_任意_0"),
                 # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
                 # Signal("30分钟_倒0笔_长度_5根K线以下_任意_任意_0"),
             ]),
@@ -80,8 +80,8 @@ def trader_example_5m(symbol, T0=False, min_interval=3600 * 4):
 
         Event(name="平多", operate=Operate.LE, factors=[
             Factor(name="持有资金", signals_all=[
-                Signal("平多时间范围_09:35_14:50_是_任意_任意_0"),
-                Signal("5分钟_倒1K_ZDT_非涨跌停_任意_任意_0"),
+                # Signal("平多时间范围_09:35_14:50_是_任意_任意_0"),
+                Signal("日线_倒1K_ZDT_非涨跌停_任意_任意_0"),
             ], signals_not=[
                 # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
                 # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),
@@ -90,8 +90,8 @@ def trader_example_5m(symbol, T0=False, min_interval=3600 * 4):
     ]
 
     tactic = {
-        "base_freq": '5分钟',
-        "freqs": ['30分钟', '日线'],  # '日线', '周线', '月线'
+        "base_freq": '日线',
+        "freqs": ['日线', '周线', '月线'],  # '日线', '周线', '月线'
         "get_signals": get_signals,
         "signals_n": 0,
 

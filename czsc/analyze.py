@@ -257,7 +257,7 @@ class CZSC:
         self.get_signals: Callable = get_signals
         self.signals = None
         self.signals_list = []
-        self.bars_input = bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
+        self.bars_input = [] # bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
         for bar in bars:
             self.update(bar)
         self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
@@ -326,6 +326,7 @@ class CZSC:
         # 更新K线序列
         if not self.bars_raw or bar.dt != self.bars_raw[-1].dt:
             self.bars_raw.append(bar)
+            self.bars_input.append(bar)
             last_bars = [bar]
         else:
             self.bars_raw[-1] = bar
@@ -378,7 +379,7 @@ class CZSC:
         :param bs: 交易标记，默认为空
         :return:
         """
-        kline = [x.__dict__ for x in self.bars_raw]
+        kline = [x.__dict__ for x in self.bars_input]
         if len(self.bi_list) > 0:
             bi = [{'dt': x.fx_a.dt, "bi": x.fx_a.fx} for x in self.bi_list] + \
                  [{'dt': self.bi_list[-1].fx_b.dt, "bi": self.bi_list[-1].fx_b.fx}]
