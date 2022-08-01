@@ -91,7 +91,7 @@ def trader_example_1d(symbol, T0=False, min_interval=3600 * 4):
 
     tactic = {
         "base_freq": '日线',
-        "freqs": ['日线', '周线', '月线'],  # '日线', '周线', '月线'
+        "freqs": ['日线'],  # '日线', '周线', '月线'
         "get_signals": get_signals,
         "signals_n": 0,
 
