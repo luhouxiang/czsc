@@ -39,8 +39,8 @@ def do_all_contract(path = r"D:\new_jyplug\T0002\export\1d"):
         c = name[:-4].split("#")
         symbol = "{}.{}".format(c[1], c[0])
         if do_one_contract(path, symbol):
-            user_log.info("[%d]: 3 buy: {}".format(index+1, symbol))
-        if index + 1 % 10 == 0:
+            user_log.info("[{:04d}]: 3 buy: {}".format(index+1, symbol))
+        if (index + 1) % 20 == 0:
             print("have_run_[{:04d}] symbols".format(index+1))
 
 
