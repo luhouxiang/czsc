@@ -77,6 +77,15 @@ def trade_replay(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, r
     user_log.info("{},{}".format(trader.strategy.__name__, trader.results['long_performance']))
 
 
+def trade_test(bg: BarGenerator, raw_bars: List[RawBar], strategy: Callable, res_path) ->bool:
+    """交易策略测试"""
+    os.makedirs(res_path, exist_ok=True)
+    trader = CzscAdvancedTrader(bg, strategy)
+    for bar in raw_bars:
+        trader.update(bar)
+    return len(trader.results['long_operates']) > 0
+
+
 def trader_fast_backtest(bars: List[RawBar],
                          init_n: int,
                          strategy: Callable,

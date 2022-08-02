@@ -24,8 +24,9 @@ res_path = r"C:\ts_data_czsc\trade_replay_test4"
 if __name__ == '__main__':
     bg = BarGenerator(base_freq, freqs=tactic['freqs'])
     bg.base_freq_constraint[base_freq] = tactic['freqs']
-    bars1 = bars[-80:-50]  # 取到剩最后50
-    bars2 = bars[-50:]  # 最后的50个
+    bars1 = bars[-80:-16]  # 取到剩最后50
+    bars2 = bars[-16:-15]
+    # bars2 = bars[-15:-14]  # 最后的50个
     user_log.info("bars1: {}-->{}".format(str(bars1[0].dt), str(bars1[-1].dt)))
     user_log.info("bars2: {}-->{}".format(str(bars2[0].dt), str(bars2[-1].dt)))
 
