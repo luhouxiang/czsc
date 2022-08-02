@@ -261,7 +261,7 @@ class CZSC:
         for bar in bars:
             self.update(bar)
         self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
-        user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))
+        # user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))
 
     def __repr__(self):
         return "<CZSC~{}~{}>".format(self.symbol, self.freq.value)

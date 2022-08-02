@@ -15,13 +15,34 @@ from czsc.utils import data_io, file_help
 from czsc.objects import RawBar
 from czsc.utils.user_logbook import user_log
 os.environ['czsc_min_bi_len'] = "6"     # 通过环境变量设定最小笔长度，6 对应新笔定义，7 对应老笔定义
+
+
 def get_day_file_list(path):
     return file_help.get_file_list(path, file_help.valid_contract_file)
 
-file_list, name_list = get_day_file_list(r"D:\new_jyplug\T0002\export\1d")
-print("file_number: {}".format(len(name_list)))
-for file in name_list:
-    print(file)
+def do_one_contract(path, symbol):
+
+    tactic = strategy_1d(symbol)
+    base_freq = tactic['base_freq']
+    bars: List[RawBar] = data_io.read_1d_data(path, symbol)
+    bg = BarGenerator(base_freq, freqs=tactic['freqs'])
+    bars1 = bars[-100:-1]
+    bars2 = bars[-1:]
+    for bar in bars1:
+        bg.update(bar)
+    return trade_test(bg, bars2, strategy_1d)
+
+def do_all_contract(path = r"D:\new_jyplug\T0002\export\1d"):
+    user_log.info("file_path: {}".format(path))
+    file_names = get_day_file_list(path)
+    for index,name in enumerate(file_names):
+        c = name[:-4].split("#")
+        symbol = "{}.{}".format(c[1], c[0])
+        if do_one_contract(path, symbol):
+            user_log.info("[%d]: 3 buy: {}".format(index+1, symbol))
+        if index + 1 % 10 == 0:
+            print("have_run_[{:04d}] symbols".format(index+1))
+
 
 #
 # tactic = strategy_1d("000333.SZ")
@@ -41,3 +62,6 @@ for file in name_list:
 #     for bar in bars1:
 #         bg.update(bar)
 #     trade_test(bg, bars2, strategy_1d, res_path)
+
+if __name__ == '__main__':
+    do_all_contract()

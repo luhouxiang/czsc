@@ -36,7 +36,7 @@ def get_file_list(path, funcs=None) -> List[str]:
             elif funcs(file):
                 file_path_list.append(cur_path)
                 name_list.append(file)
-    return file_path_list, name_list
+    return name_list
 
 
 def read_lines(path_file, head=False)->List[str]:
