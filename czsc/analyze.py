@@ -210,7 +210,7 @@ def get_zs_seq(bis: List[BI]) -> List[ZSItem]:
     :param bis: 连续笔对象列表
     :return: 中枢序列
     """
-    zs_list = []
+    zs_list: List[ZSItem] = []
     if not bis:
         return []
 
