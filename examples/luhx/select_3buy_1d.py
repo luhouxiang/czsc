@@ -38,30 +38,14 @@ def do_all_contract(path = r"D:\new_jyplug\T0002\export\1d"):
     for index,name in enumerate(file_names):
         c = name[:-4].split("#")
         symbol = "{}.{}".format(c[1], c[0])
-        if do_one_contract(path, symbol):
-            user_log.info("[{:04d}]: 3 buy: {}".format(index+1, symbol))
+        try:
+            if do_one_contract(path, symbol):
+                user_log.info("[{:04d}]: 3 buy: {}".format(index, symbol))
+        except Exception as e:
+            user_log.error("[{:04d}] symbol: {}, error: {}".format(index, symbol, str(e)))
         if (index + 1) % 20 == 0:
-            print("have_run_[{:04d}] symbols".format(index+1))
+            print("[{:04d}] have_run_symbols".format(index))
 
-
-#
-# tactic = strategy_1d("000333.SZ")
-# base_freq = tactic['base_freq']
-# bars: List[RawBar] = data_io.read_1d_data(r"D:\new_jyplug\T0002\export\1d", "000333.SZ")
-# res_path = r"C:\ts_data_czsc\trade_replay_test4"
-#
-#
-# if __name__ == '__main__':
-#     bg = BarGenerator(base_freq, freqs=tactic['freqs'])
-#     bg.base_freq_constraint[base_freq] = tactic['freqs']
-#     bars1 = bars[-300:-1]  # 取300根日线
-#     bars2 = bars[-1:] # 取最后一根K线
-#     user_log.info("bars1: {}-->{}".format(str(bars1[0].dt), str(bars1[-1].dt)))
-#     user_log.info("bars2: {}-->{}".format(str(bars2[0].dt), str(bars2[-1].dt)))
-#
-#     for bar in bars1:
-#         bg.update(bar)
-#     trade_test(bg, bars2, strategy_1d, res_path)
 
 if __name__ == '__main__':
     do_all_contract()
