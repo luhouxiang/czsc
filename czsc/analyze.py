@@ -258,9 +258,10 @@ class CZSC:
         self.signals = None
         self.signals_list = []
         self.bars_input = [] # bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
+        self.zs_list: List[ZSItem] = []
         for bar in bars:
             self.update(bar)
-        self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
+        # self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
         # user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))
 
     def __repr__(self):
@@ -315,8 +316,30 @@ class CZSC:
         if isinstance(bi, BI):
             self.bi_list.append(bi)
 
-    def update_zs(self):
-        self.zs_list = get_zs_seq(self.bi_list)
+    def __update_zs(self, bi:BI):
+        zs_list: List[ZSItem] = self.zs_list
+        if not zs_list:
+            zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
+            return zs_list  # 如果没有的话，直接初始化一个list完成
+
+        zs = zs_list[-1]
+        if not zs.bis:  # 如果最后一个中枢没有笔，添加上笔
+            zs.bis.append(bi)
+            return zs_list
+
+        if zs.bis[-1].sdt == bi.sdt and zs.bis[-1].edt == bi.edt:   # 中枢中笔的开始和结束相同，直接返回
+            return zs_list
+
+        if zs.bis[-1].sdt == bi.sdt:    # 如果中枢笔的开始相同，方向或结束不同，先删除，再按规则添加
+            zs.bis.pop()    # 删除最后一个元素
+
+        if (bi.direction == Direction.Up and bi.high < zs.zd) \
+                or (bi.direction == Direction.Down and bi.low > zs.zg):
+            zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
+        else:
+            zs.bis.append(bi)
+            zs_list[-1] = zs
+        return zs_list
 
     def update(self, bar: RawBar):
         """更新分析结果
@@ -361,6 +384,7 @@ class CZSC:
                     s_index = i
                     break
             self.bars_raw = self.bars_raw[s_index:]
+            self.__update_zs(self.bi_list[-1])
 
         if self.get_signals:
             self.signals = self.get_signals(c=self)

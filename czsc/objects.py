@@ -263,6 +263,7 @@ class ZSItem:
 
     @property
     def zg(self):
+        """中枢边框高点"""
         return min([x.high for x in self.bis[:3]])
 
     @property
@@ -272,6 +273,7 @@ class ZSItem:
 
     @property
     def zd(self):
+        """中枢边框低点"""
         return max([x.low for x in self.bis[:3]])
 
     def __repr__(self):

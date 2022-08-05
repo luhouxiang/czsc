@@ -94,7 +94,7 @@ class CzscAdvancedTrader:
                             t_op = op.copy()
                             t_op['dt'] = freq_end_time(t_op['dt'], Freq(freq))
                             bs.append(t_op)
-            ka.update_zs()
+
             chart = ka.to_echarts(width, height, bs)
             tab.add(chart, freq)
 
@@ -150,6 +150,7 @@ class CzscAdvancedTrader:
             self.s.update(signals_counter(self.signals_list))
 
         last_n1b = last_bar.close / self.kas[self.base_freq].bars_raw[-2].close - 1
+
         # 遍历 long_events，更新 long_pos
         if self.long_events:
             assert isinstance(self.long_pos, PositionLong), "long_events 必须配合 PositionLong 使用"
