@@ -257,7 +257,7 @@ class CZSC:
         self.get_signals: Callable = get_signals
         self.signals = None
         self.signals_list = []
-        self.bars_input = [] # bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
+        self.bars_input: List[RawBar] = [] # bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
         self.zs_list: List[ZSItem] = []
         for bar in bars:
             self.update(bar)

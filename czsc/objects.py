@@ -156,6 +156,30 @@ def create_fake_bis(fxs: List[FX]) -> List[FakeBI]:
 
 
 @dataclass
+class WeiBI:
+    """微笔"""
+    symbol: str
+    bars: List[RawBar] = None
+    direction: Direction = None
+
+    def __post_init__(self):
+        self.sdt = self.bars[0].dt
+        self.edt = self.bars[-1].dt
+
+    def __repr__(self):
+        return f"WeiBI(symbol={self.symbol}, sdt={self.sdt}, edt={self.edt}, " \
+               f"direction={self.direction}, high={self.high}, low={self.low})"
+
+    @property
+    def high(self):
+        return max([x.high for x in self.bars])
+
+    @property
+    def low(self):
+        return min([x.low for x in self.bars])
+
+
+@dataclass
 class BI:
     symbol: str
     fx_a: FX = None     # 笔开始的分型
