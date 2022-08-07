@@ -258,12 +258,13 @@ class CZSC:
         self.signals = None
         self.signals_list = []
         self.bars_input: List[RawBar] = [] # bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
-        self.zs_list: List[ZSItem] = []
         for bar in bars:
             try:
                 self.update(bar)
             except Exception as e:
                 print(e)
+        self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
+
         # self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
         # user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))
 
@@ -391,7 +392,6 @@ class CZSC:
                     s_index = i
                     break
             self.bars_raw = self.bars_raw[s_index:]
-            self.__update_zs(self.bi_list[-1])
 
         if self.get_signals:
             self.signals = self.get_signals(c=self)

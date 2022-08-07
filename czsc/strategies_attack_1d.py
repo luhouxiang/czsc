@@ -38,18 +38,20 @@ def trader_example_attack_1d(symbol, T0=False, min_interval=3600 * 4):
     """
     def get_signals(cat: CzscAdvancedTrader) -> OrderedDict:
         s = OrderedDict({"symbol": cat.symbol, "dt": cat.end_dt, "close": cat.latest_price})
-        s.update(signals.pos.get_s_long01(cat, th=100))
-        s.update(signals.pos.get_s_long02(cat, th=100))
-        s.update(signals.pos.get_s_long05(cat, span='月', th=500))
+        # s.update(signals.pos.get_s_long01(cat, th=100))
+        # s.update(signals.pos.get_s_long02(cat, th=100))
+        # s.update(signals.pos.get_s_long05(cat, span='月', th=500))
 
         for _, c in cat.kas.items():
             s.update(signals.st_analysis.get_s_attack_xt(c, 1))
-            if c.freq in [Freq.D, Freq.W]:
-                s.update(signals.other.get_s_zdt(c, di=1))
-                s.update(signals.other.get_s_op_time_span(c, op='开多', time_span=('13:00', '14:50')))
-                s.update(signals.other.get_s_op_time_span(c, op='平多', time_span=('09:35', '14:50')))
-            if c.freq in [Freq.D, Freq.W]:
-                s.update(signals.ta.get_s_macd(c, di=1))
+            if c.freq in [Freq.D]:
+                pass
+                # s.update(signals.other.get_s_zdt(c, di=1))
+                # s.update(signals.other.get_s_op_time_span(c, op='开多', time_span=('13:00', '14:50')))
+                # s.update(signals.other.get_s_op_time_span(c, op='平多', time_span=('09:35', '14:50')))
+            if c.freq in [Freq.D]:
+                # s.update(signals.ta.get_s_macd(c, di=1))
+                pass
         return s
 
     # 定义多头持仓对象和交易事件
@@ -79,7 +81,7 @@ def trader_example_attack_1d(symbol, T0=False, min_interval=3600 * 4):
         Event(name="平多", operate=Operate.LE, factors=[
             Factor(name="持有资金", signals_all=[
                 # Signal("平多时间范围_09:35_14:50_是_任意_任意_0"),
-                Signal("日线_倒1K_ZDT_非涨跌停_任意_任意_0"),
+                # Signal("日线_倒1K_ZDT_非涨跌停_任意_任意_0"),
             ], signals_not=[
                 # Signal("30分钟_倒0笔_方向_向上_任意_任意_0"),
                 # Signal("30分钟_倒1K_MACD多空_多头_任意_任意_0"),

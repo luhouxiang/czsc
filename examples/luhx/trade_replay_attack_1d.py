@@ -36,8 +36,8 @@ def run_start(tactic, bars):
     bg.base_freq_constraint[base_freq] = freqs
     # bars1 = bars[:400]
     # bars2 = bars[400:]
-    bars1 = bars[:4]
-    bars2 = bars[4:]
+    bars1 = bars[:-1]
+    bars2 = bars[-1:]
     user_log.info("bars1: {}-->{}".format(str(bars1[0].dt), str(bars1[-1].dt)))
     user_log.info("bars2: {}-->{}".format(str(bars2[0].dt), str(bars2[-1].dt)))
     res_path = r"C:\ts_data_czsc\trade_replay_test4"
@@ -47,5 +47,5 @@ def run_start(tactic, bars):
 
 
 if __name__ == '__main__':
-    tactic, bars = init_stock_info("000915.SZ", r"D:\new_jyplug\T0002\export\custom_1d")
+    tactic, bars = init_stock_info("600026.SH", r"D:\new_jyplug\T0002\export\1d")
     run_start(tactic, bars)

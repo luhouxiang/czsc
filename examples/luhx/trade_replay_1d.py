@@ -17,7 +17,7 @@ os.environ['czsc_min_bi_len'] = "6"     # 通过环境变量设定最小笔长�
 
 tactic = strategy_1d("000333.SZ")
 base_freq = tactic['base_freq']
-bars: List[RawBar] = data_io.read_1d_data(r"D:\new_jyplug\T0002\export\1d", "000333.SZ")
+bars: List[RawBar] = data_io.read_1d_data(r"D:\new_jyplug\T0002\export\1d", "600026.SH")    # 000333
 res_path = r"C:\ts_data_czsc\trade_replay_test4"
 
 
