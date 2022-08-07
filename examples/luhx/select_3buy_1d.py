@@ -8,7 +8,7 @@
 """
 import os
 from typing import List
-from czsc.strategies_1d import trader_example_1d as strategy_1d
+from czsc.strategies_attack_1d import trader_example_attack_1d as strategy_1d
 from czsc.utils import BarGenerator
 from czsc.traders.utils import trade_test
 from czsc.utils import data_io, file_help
@@ -29,7 +29,10 @@ def do_one_contract(path, symbol):
     bars1 = bars[-100:-1]
     bars2 = bars[-1:]
     for bar in bars1:
-        bg.update(bar)
+        try:
+            bg.update(bar)
+        except Exception as e:
+            print(e)
     return trade_test(bg, bars2, strategy_1d)
 
 def do_all_contract(path = r"D:\new_jyplug\T0002\export\1d"):

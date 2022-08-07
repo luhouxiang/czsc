@@ -54,28 +54,33 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
     di_name = f"倒{di}笔"
     v = Signal(k1=freq.value, k2=di_name, k3='攻击形态', v1='其他', v2='其他', v3='其他')
 
-    if len(bis) != 5:
-        return v
+    # if len(bis) != 5:
+    #     return v
+    #
+    # bi1, bi2, bi3, bi4, bi5 = bis
+    # if not (bi1.direction == bi3.direction == bi5.direction):
+    #     print(f"1,3,5 的 direction 不一致，无法识别五段形态；{bi1}{bi3}{bi5}")
+    #     return v
 
-    bi1, bi2, bi3, bi4, bi5 = bis
-    if not (bi1.direction == bi3.direction == bi5.direction):
-        print(f"1,3,5 的 direction 不一致，无法识别五段形态；{bi1}{bi3}{bi5}")
-        return v
-
-    direction = bi1.direction
-    # max_high = max([x.high for x in bis])
-    # min_low = min([x.low for x in bis])
-    assert direction in [Direction.Down, Direction.Up], "direction 的取值错误"
+    # direction = bi1.direction
+    # # max_high = max([x.high for x in bis])
+    # # min_low = min([x.low for x in bis])
+    # assert direction in [Direction.Down, Direction.Up], "direction 的取值错误"
     if c.zs_list:   # 存在中枢
         if c.bars_input[-1].low < c.zs_list[-1].zg: # 当前已进入中枢，退出
             return v
         # if c.bars_input[-1].low > c.zs_list[-1].zg and c.bars_input[-30] < c.zs_list[-1].zg:    # 不应离开中枢太久，最多不超过30个周期
-        abc_list = get_abc(c.bars_input[-30:], N=6)
+        try:
+            abc_list = get_abc(c.bars_input[-30:], N=6)
+        except Exception as e:
+            print(e)
         if abc_list[-1].direction != Direction.Down:
             return v
-        if abc_list[-2].low > c.zs_list[-1].zg:
-            return v
-        # if abc_list[-1]
+        try:
+            if abc_list[-2].low > c.zs_list[-1].zg:
+                return v
+        except Exception as e:
+            print(e)
         return Signal(k1=freq.value, k2=di_name, k3='攻击形态', v1='类三买', v2='五笔')
 
     return v

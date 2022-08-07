@@ -260,7 +260,10 @@ class CZSC:
         self.bars_input: List[RawBar] = [] # bars    # 输入的原始K线，相对bars_raw而言，bars_raw会有略微的变动
         self.zs_list: List[ZSItem] = []
         for bar in bars:
-            self.update(bar)
+            try:
+                self.update(bar)
+            except Exception as e:
+                print(e)
         # self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
         # user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))
 
@@ -333,9 +336,13 @@ class CZSC:
         if zs.bis[-1].sdt == bi.sdt:    # 如果中枢笔的开始相同，方向或结束不同，先删除，再按规则添加
             zs.bis.pop()    # 删除最后一个元素
 
-        if (bi.direction == Direction.Up and bi.high < zs.zd) \
-                or (bi.direction == Direction.Down and bi.low > zs.zg):
-            zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
+        if zs.bis:
+            if (bi.direction == Direction.Up and bi.high < zs.zd) \
+                    or (bi.direction == Direction.Down and bi.low > zs.zg):     # TODO: 看起来这儿的问题
+                zs_list.append(ZSItem(symbol=bi.symbol, bis=[bi]))
+            else:
+                zs.bis.append(bi)
+                zs_list[-1] = zs
         else:
             zs.bis.append(bi)
             zs_list[-1] = zs
