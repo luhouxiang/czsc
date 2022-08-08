@@ -71,7 +71,8 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
             return v
         # if c.bars_input[-1].low > c.zs_list[-1].zg and c.bars_input[-30] < c.zs_list[-1].zg:    # 不应离开中枢太久，最多不超过30个周期
         try:
-            abc_list = get_abc(c.bars_input[-30:], N=6)
+            abc_list = get_abc(c.bars_input[-45:], N=6)
+            c.wbi_list = abc_list
         except Exception as e:
             print(e)
         if abc_list[-1].direction != Direction.Down:
@@ -81,6 +82,19 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
                 return v
         except Exception as e:
             print(e)
+        if abc_list[-3].high > abc_list[-2].high:   # A段的最高 > B段的最高（即B段的最高不是最高）
+            return v
+        if (abc_list[-2].high - abc_list[-2].low)/abc_list[-2].low > 0.40:  # 涨幅大于40%,直接忽略
+            return v
+        if abc_list[-1].low < c.zs_list[-1].zg:  # C段的最低低于中枢的上沿
+            return v
+
+        if len(abc_list[-1].bars) > 10: # C段的调整》10个交易日，久盘必跌
+            return v
+
+        if c.bars_input[-1].id - abc_list[-1].bars[-1].id >= 4:
+            return v
+
         return Signal(k1=freq.value, k2=di_name, k3='攻击形态', v1='类三买', v2='五笔')
 
     return v

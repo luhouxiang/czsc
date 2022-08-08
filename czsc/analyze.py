@@ -13,7 +13,7 @@ from typing import List, Callable
 from collections import OrderedDict
 
 from .enum import Mark, Direction
-from .objects import BI, FX, RawBar, NewBar, Signal, Freq, ZSItem
+from .objects import BI, FX, RawBar, NewBar, Signal, Freq, ZSItem, WeiBI
 from .utils.echarts_plot import kline_pro_ex
 from .utils.user_logbook import user_log
 # from . import signals
@@ -264,6 +264,7 @@ class CZSC:
             except Exception as e:
                 print(e)
         self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
+        self.wbi_list: List[WeiBI] = []
 
         # self.zs_list: List[ZSItem] = get_zs_seq(self.bi_list)
         # user_log.info("freq:{},zs_list:{}".format(self.freq, self.zs_list))

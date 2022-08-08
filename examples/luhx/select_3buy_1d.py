@@ -21,6 +21,7 @@ def get_day_file_list(path):
     return file_help.get_file_list(path, file_help.valid_contract_file)
 
 def do_one_contract(path, symbol):
+    res_path = r"D:\ts_data_czsc\select_3buy_1d"
 
     tactic = strategy_1d(symbol)
     base_freq = tactic['base_freq']
@@ -33,7 +34,7 @@ def do_one_contract(path, symbol):
             bg.update(bar)
         except Exception as e:
             print(e)
-    return trade_test(bg, bars2, strategy_1d)
+    return trade_test(bg, bars2, strategy_1d, res_path)
 
 def do_all_contract(path = r"D:\new_jyplug\T0002\export\1d"):
     user_log.info("file_path: {}".format(path))
