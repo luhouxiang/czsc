@@ -75,6 +75,11 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
             c.wbi_list = abc_list
         except Exception as e:
             print(e)
+        if len(c.wbi_list)<3:
+            return v
+        A, B, C = c.wbi_list[-3], c.wbi_list[-2], c.wbi_list[-1]
+        if C.low < A.low:   # C段低点 低于 A段低点， 过滤
+            return v
         if abc_list[-1].direction != Direction.Down:
             return v
         try:
