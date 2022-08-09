@@ -14,7 +14,7 @@ from ..utils.ta import RSQ
 
 
 def get_abc(ks: List[RawBar],N=5) -> List[WeiBI]:
-    hs,ls=[x.high for x in ks],[x.low for x in ks]
+    hs,ls=[x.high for x in ks],[x.close for x in ks]
     sel = 0
     M = len(ks)
     tbs = []

@@ -57,11 +57,11 @@ class CzscAdvancedTrader:
 
         last_bar = self.kas[self.base_freq].bars_raw[-1]
         self.end_dt, self.bid, self.latest_price = last_bar.dt, last_bar.id, last_bar.close
-        if self.get_signals:
-            self.s = self.get_signals(self)
-            self.s.update(last_bar.__dict__)
-        else:
-            self.s = OrderedDict()
+        # if self.get_signals:
+        #     self.s = self.get_signals(self)
+        #     self.s.update(last_bar.__dict__)
+        # else:
+        self.s = OrderedDict()
 
     def __repr__(self):
         return "<{} for {}>".format(self.name, self.symbol)

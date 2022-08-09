@@ -63,6 +63,7 @@ def heat_map(data: List[dict],
 def kline_pro_ex(kline: List[dict],
               fx: List[dict] = None,
               bi: List[dict] = None,
+              wbi: List[dict] = None,
               zs: List[dict] = None,
               xd: List[dict] = None,
               bs: List[dict] = None,
@@ -330,6 +331,18 @@ def kline_pro_ex(kline: List[dict],
             chart_bi.set_series_opts(markarea_opts=opts.MarkAreaOpts(
                 data=zs_data
             ))
+    if wbi:
+        bi_dts = [x['dt'] for x in wbi]
+        bi_val = [round(x['wbi'], 2) for x in wbi]
+        chart_bi = Line()
+        chart_bi.add_xaxis(bi_dts)
+        chart_bi.add_yaxis(series_name="WBI", y_axis=bi_val, is_selected=True,
+                           symbol="diamond", symbol_size=10, label_opts=label_show_opts,
+                           itemstyle_opts=opts.ItemStyleOpts(color="rgba(255, 0, 0, 1.0)", ),
+                           linestyle_opts=opts.LineStyleOpts(width=1.5))
+
+        chart_bi.set_global_opts(xaxis_opts=grid0_xaxis_opts, legend_opts=legend_not_show_opts)
+        chart_k = chart_k.overlap(chart_bi)
     if xd:
         xd_dts = [x['dt'] for x in xd]
         xd_val = [x['xd'] for x in xd]

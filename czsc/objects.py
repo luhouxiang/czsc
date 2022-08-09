@@ -178,6 +178,10 @@ class WeiBI:
     def low(self):
         return min([x.low for x in self.bars])
 
+    @property
+    def low_close(self):
+        return min([x.close for x in self.bars])
+
 
 @dataclass
 class BI:

@@ -47,5 +47,5 @@ def run_start(tactic, bars):
 
 
 if __name__ == '__main__':
-    tactic, bars = init_stock_info("000682.SZ", r"D:\new_jyplug\T0002\export\1d")
+    tactic, bars = init_stock_info("000915.SZ", r"D:\new_jyplug\T0002\export\custom_1d")
     run_start(tactic, bars)

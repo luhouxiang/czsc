@@ -421,12 +421,25 @@ class CZSC:
         else:
             bi = None
             fx = None
+        if len(self.wbi_list) >= 3:
+            wbi = []
+            for i in self.wbi_list[-3:]:
+                if i.direction == Direction.Down:
+                    wbi.append({"dt": i.sdt, "wbi": i.high})
+                else:
+                    wbi.append({"dt": i.sdt, "wbi": i.low_close})
+            if i.direction == Direction.Down:
+                wbi.append({"dt": self.wbi_list[-1].edt, "wbi": i.low_close})
+            else:
+                wbi.append({"dt": self.wbi_list[-1].edt, "wbi": i.high})
+        else:
+            wbi = None
         if len(self.zs_list) > 0:
             zs = [{'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg} for x in self.zs_list]
         else:
             zs = None
         zs = zs
-        chart = kline_pro_ex(kline, fx=fx, bi=bi, zs=zs, width=width, height=height, bs=bs,
+        chart = kline_pro_ex(kline, fx=fx, bi=bi, wbi=wbi, zs=zs, width=width, height=height, bs=bs,
                           title="{}-{}".format(self.symbol, self.freq.value))
         return chart
 
