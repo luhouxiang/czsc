@@ -80,24 +80,30 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
         A, B, C = c.wbi_list[-3], c.wbi_list[-2], c.wbi_list[-1]
         if C.low < A.low:   # C段低点 低于 A段低点， 过滤
             return v
-        if abc_list[-1].direction != Direction.Down:
+        if C.direction != Direction.Down:   # C段不是向下调整
             return v
         try:
-            if abc_list[-2].low > c.zs_list[-1].zg:
+            if B.low > c.zs_list[-1].zg:    # B段低点高于中枢（即程序已经远离中枢）
                 return v
         except Exception as e:
             print(e)
-        if abc_list[-3].high > abc_list[-2].high:   # A段的最高 > B段的最高（即B段的最高不是最高）
+        if A.high > B.high:   # A段的最高 > B段的最高（即B段的最高不是最高）
             return v
-        if (abc_list[-2].high - abc_list[-2].low)/abc_list[-2].low > 0.40:  # 涨幅大于40%,直接忽略
+        if (B.high - B.low)/B.low_close > 0.40:  # 涨幅大于40%,直接忽略
             return v
-        if abc_list[-1].low < c.zs_list[-1].zg:  # C段的最低低于中枢的上沿
-            return v
-
-        if len(abc_list[-1].bars) > 10: # C段的调整》10个交易日，久盘必跌
+        if C.low < c.zs_list[-1].zg:  # C段的最低低于中枢的上沿
             return v
 
-        if c.bars_input[-1].id - abc_list[-1].bars[-1].id >= 4:
+        if len(C.bars) > 10: # C段的调整》10个交易日，久盘必跌
+            return v
+
+        if c.bars_input[-1].id - C.bars[-1].id >= 4:    # C段结束已经很久了
+            return v
+
+        if (A.high - A.low_close)*3 > (B.high - B.low_close)*2:  # A段达到B段2/3
+            return v
+
+        if B.angle <= 20:   # 角度小于20
             return v
 
         return Signal(k1=freq.value, k2=di_name, k3='攻击形态', v1='类三买', v2='五笔')

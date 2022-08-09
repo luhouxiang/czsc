@@ -5,6 +5,7 @@ email: zeng_bin8888@163.com
 create_dt: 2021/3/10 12:21
 describe: 常用对象结构
 """
+import math
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List
@@ -140,15 +141,15 @@ def create_fake_bis(fxs: List[FX]) -> List[FakeBI]:
 
     fake_bis = []
     for i in range(1, len(fxs)):
-        fx1 = fxs[i-1]
+        fx1 = fxs[i - 1]
         fx2 = fxs[i]
         assert fx1.mark != fx2.mark
         if fx1.mark == Mark.D:
             fake_bi = FakeBI(symbol=fx1.symbol, sdt=fx1.dt, edt=fx2.dt, direction=Direction.Up,
-                             high=fx2.high, low=fx1.low, power=round(fx2.high-fx1.low, 2))
+                             high=fx2.high, low=fx1.low, power=round(fx2.high - fx1.low, 2))
         elif fx1.mark == Mark.G:
             fake_bi = FakeBI(symbol=fx1.symbol, sdt=fx1.dt, edt=fx2.dt, direction=Direction.Down,
-                             high=fx1.high, low=fx2.low, power=round(fx1.high-fx2.low, 2))
+                             high=fx1.high, low=fx2.low, power=round(fx1.high - fx2.low, 2))
         else:
             raise ValueError
         fake_bis.append(fake_bi)
@@ -182,13 +183,20 @@ class WeiBI:
     def low_close(self):
         return min([x.close for x in self.bars])
 
+    @property
+    def angle(self):  # 角度
+        if self.direction == Direction.Up:
+            return math.atan2(self.high - self.low_close, max(len(self.bars) - 1, 1)) / math.pi * 180
+        else:
+            return math.atan2(self.low_close - self.high, max(len(self.bars) - 1, 1)) / math.pi * 180
+
 
 @dataclass
 class BI:
     symbol: str
-    fx_a: FX = None     # 笔开始的分型
-    fx_b: FX = None     # 笔结束的分型
-    fxs: List = None    # 笔内部的分型列表
+    fx_a: FX = None  # 笔开始的分型
+    fx_b: FX = None  # 笔结束的分型
+    fxs: List = None  # 笔内部的分型列表
     direction: Direction = None
     bars: List[NewBar] = None
 
@@ -308,6 +316,7 @@ class ZSItem:
         return f"ZS(sdt={self.sdt}, sdir={self.sdir}, edt={self.edt}, edir={self.edir}, " \
                f"len_bis={len(self.bis)}, zg={self.zg}, zd={self.zd}, " \
                f"gg={self.gg}, dd={self.dd}, zz={self.zz})"
+
 
 @dataclass
 class Signal:
@@ -570,9 +579,9 @@ class PositionLong:
         self.operates = []
         self.last_pair_operates = []
         self.pairs = []
-        self.long_high = -1         # 持多仓期间出现的最高价
-        self.long_cost = -1         # 最近一次加多仓的成本
-        self.long_bid = -1          # 最近一次加多仓的1分钟Bar ID
+        self.long_high = -1  # 持多仓期间出现的最高价
+        self.long_cost = -1  # 最近一次加多仓的成本
+        self.long_bid = -1  # 最近一次加多仓的1分钟Bar ID
 
         self.today = None
         self.today_pos = 0
@@ -608,7 +617,7 @@ class PositionLong:
             '持仓K线数': operates[-1]['bid'] - operates[0]['bid'],
             '事件序列': " > ".join([x['op_desc'] for x in operates]),
         }
-        pair['持仓天数'] = (pair['平仓时间'] - pair['开仓时间']).total_seconds() / (24*3600)
+        pair['持仓天数'] = (pair['平仓时间'] - pair['开仓时间']).total_seconds() / (24 * 3600)
         pair['盈亏金额'] = pair['累计平仓'] - pair['累计开仓']
         # 注意：【交易盈亏】的计算是对交易进行的，不是对账户，所以不能用来统计账户的收益
         pair['交易盈亏'] = int((pair['盈亏金额'] / pair['累计开仓']) * 10000) / 10000
@@ -750,9 +759,9 @@ class PositionShort:
         self.operates = []
         self.last_pair_operates = []
         self.pairs = []
-        self.short_low = -1          # 持多仓期间出现的最低价
-        self.short_cost = -1         # 最近一次加空仓的成本
-        self.short_bid = -1          # 最近一次加空仓的1分钟Bar ID
+        self.short_low = -1  # 持多仓期间出现的最低价
+        self.short_cost = -1  # 最近一次加空仓的成本
+        self.short_bid = -1  # 最近一次加空仓的1分钟Bar ID
 
         self.today = None
         self.today_pos = 0
@@ -788,7 +797,7 @@ class PositionShort:
             '持仓K线数': operates[-1]['bid'] - operates[0]['bid'],
             '事件序列': " > ".join([x['op_desc'] for x in operates]),
         }
-        pair['持仓天数'] = (pair['平仓时间'] - pair['开仓时间']).total_seconds() / (24*3600)
+        pair['持仓天数'] = (pair['平仓时间'] - pair['开仓时间']).total_seconds() / (24 * 3600)
         # 空头计算盈亏，需要取反
         pair['盈亏金额'] = -(pair['累计平仓'] - pair['累计开仓'])
         # 注意：【交易盈亏】的计算是对交易进行的，不是对账户，所以不能用来统计账户的收益
