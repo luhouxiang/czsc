@@ -103,7 +103,7 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
         if (A.high - A.low_close)*3 > (B.high - B.low_close)*2:  # A段达到B段2/3
             return v
 
-        if B.angle <= 20:   # 角度小于20
+        if B.angle <= 8:   # 角度小于8
             return v
 
         return Signal(k1=freq.value, k2=di_name, k3='攻击形态', v1='类三买', v2='五笔')

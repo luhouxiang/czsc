@@ -321,6 +321,8 @@ class CZSC:
         if isinstance(bi, BI):
             self.bi_list.append(bi)
 
+        self.zs_list = get_zs_seq(self.bi_list)
+
     def __update_zs(self, bi:BI):
         zs_list: List[ZSItem] = self.zs_list
         if not zs_list:
