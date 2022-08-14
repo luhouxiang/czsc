@@ -15,7 +15,7 @@ from czsc.traders.utils import trade_test
 from czsc.utils import data_io, file_help
 from czsc.objects import RawBar
 from czsc.utils.user_logbook import user_log
-os.environ['czsc_min_bi_len'] = "6"     # 通过环境变量设定最小笔长度，6 对应新笔定义，7 对应老笔定义
+os.environ['czsc_min_bi_len'] = "7"     # 通过环境变量设定最小笔长度，6 对应新笔定义，7 对应老笔定义
 
 
 def get_day_file_list(path):
