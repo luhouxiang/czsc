@@ -89,7 +89,7 @@ def feel_five_bi(c: analyze.CZSC, bis: List[Union[BI, FakeBI]], freq: Freq, di: 
             print(e)
         if A.high > B.high:   # A段的最高 > B段的最高（即B段的最高不是最高）
             return v
-        if (B.high - B.low)/B.low_close > 0.40:  # 涨幅大于40%,直接忽略
+        if (B.high - B.low)/B.low_close > 0.60:  # 涨幅大于40%,直接忽略
             return v
         if C.low < c.zs_list[-1].zg:  # C段的最低低于中枢的上沿
             return v
