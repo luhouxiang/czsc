@@ -321,6 +321,7 @@ class CZSC:
         if isinstance(bi, BI):
             self.bi_list.append(bi)
 
+    def refresh_zs_list(self):
         self.zs_list = get_zs_seq(self.bi_list)
 
     def __update_zs(self, bi:BI):
@@ -437,7 +438,11 @@ class CZSC:
         else:
             wbi = None
         if len(self.zs_list) > 0:
-            zs = [{'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg} for x in self.zs_list]
+            zs = []
+            for x in self.zs_list:
+                if len(x.bis) >= 4:
+                    zs.append({'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg})
+            # zs = [{'sdt': x.bis[0].sdt, 'edt': x.bis[-1].edt, 'zd': x.zd, 'zg': x.zg} for x in self.zs_list]
         else:
             zs = None
         zs = zs

@@ -26,8 +26,8 @@ def do_one_contract(path, symbol, res_path):
     base_freq = tactic['base_freq']
     bars: List[RawBar] = data_io.read_1d_data(path, symbol)
     bg = BarGenerator(base_freq, freqs=tactic['freqs'])
-    bars1 = bars[-1200:-90]
-    bars2 = bars[-90:-89]
+    bars1 = bars[-1200:-1]
+    bars2 = bars[-1:]
     for bar in bars1:
         try:
             bg.update(bar)

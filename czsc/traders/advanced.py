@@ -20,7 +20,6 @@ from czsc.utils.cache import home_path
 from czsc import envs
 
 
-
 class CzscAdvancedTrader:
     """缠中说禅技术分析理论之多级别联立交易决策类（支持分批开平仓 / 支持从任意周期开始交易）"""
 
@@ -134,6 +133,7 @@ class CzscAdvancedTrader:
         self.bg.update(bar)
         for freq, b in self.bg.bars.items():
             self.kas[freq].update(b[-1])
+            self.kas[freq].refresh_zs_list()
 
         self.symbol = symbol = bar.symbol
         last_bar = self.kas[self.base_freq].bars_raw[-1]
